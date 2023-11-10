@@ -1,43 +1,90 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-    <a className="navbar-brand" href="#">Navbar</a>
-    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
+import { useState,useEffect } from 'react';
+import './App.css';
+import Footer from './MyComponents/Footer';
+import Header from './MyComponents/Header';
+import Todos from './MyComponents/Todos';
+import AddTodo from './MyComponents/AddTodo';
+
+function App() { 
+  let inittodo;
+  if(localStorage.getItem("todos"))
+     inittodo=[];
+  else
+     inittodo=JSON.parse(localStorage.getItem("todos"));
+  const wrapperStyle = {
+    display: "flex",
+    minHeight: "100vh",
+    flexDirection: "column",
+  };
+
+  const contentStyle = {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  };
+
+  const footerDefaultStyle = {
+    flexShrink: 0, // Prevent the footer from shrinking
+    width: "100%",
+  };
+  const onDelete=(todo)=>{
+    //console.log('i m delete btn',todo);
+    settodos(todos.filter((e)=>{
+       return e!==todo;
+    }))
+  }
+  const addtodo=(title,desc)=>{
+    let sno;
+   // console.log(title,desc);
+    if(todos.length===0)
+    sno=0;
+    else
+    sno=todos[todos.length-1].sno+1;
+   const mytodos={
+    sno:sno,
+    title:title,
+    desc:desc,
+   }
+  settodos([...todos,mytodos]);
   
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav mr-auto">
-        <li className="nav-item active">
-          <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="#">Link</a>
-        </li>
-        <li className="nav-item dropdown">
-          <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
-          </a>
-          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a className="dropdown-item" href="#">Action</a>
-            <a className="dropdown-item" href="#">Another action</a>
-            <div className="dropdown-divider"></div>
-            <a className="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link disabled" href="#">Disabled</a>
-        </li>
-      </ul>
-      <form className="form-inline my-2 my-lg-0">
-        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+  }
+  const[todos,settodos]=useState(inittodo);
+  useEffect(()=>{
+    localStorage.setItem("todos",JSON.stringify(todos));
+  },[todos])
+ 
+  // const[todos,settodos]=useState([
+    // {
+    //     sno: 1,
+    //     title: "Go to the market",
+    //     desc: "Go to the market and get the job done"
+    // },
+    // {
+    //     sno: 2,
+    //     title: "Go to the mall",
+    //     desc: "Go to the mall and get the job done"
+    // },
+    // {
+    //     sno: 3,
+    //     title: "Go to the shop",
+    //     desc: "Go to the shop and get the job done"
+    // },
+    
+  // ])
+  return (
+    <div style={wrapperStyle}>
+      <div className="header">
+        <Header title="My ToDo List" searchBar={false} />
+      </div>
+      <div style={contentStyle}>
+        <AddTodo addtodo={addtodo}/>
+        <Todos title="Todos List" todos={todos} onDelete={onDelete} />
+      </div>
+      <div style={footerDefaultStyle}>
+        <Footer />
+      </div>
     </div>
-  </nav>
   );
 }
 export default App;
