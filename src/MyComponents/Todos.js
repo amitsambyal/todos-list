@@ -2,7 +2,11 @@ import React from 'react'
 import TodoItems from './TodoItems'
 
 const Todos = (props) => {
-    
+    // Check if todos is null
+  if (props.todos === null) {
+    return <p>Loading...</p>; // or any other loading state
+  }
+
   return (
     <div className="container">
       <h2 className="text-center my-3">{props.title}</h2>  
